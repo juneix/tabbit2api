@@ -1,14 +1,14 @@
 services:
   tabbit2api:
-    build: .
+    image: ghcr.io/juneix/tabbit2api
     container_name: tabbit2api
     restart: unless-stopped
-    ports:
-      - "${PORT:-8800}:8800"
+    network_mode: host
     volumes:
       - ./data:/app/data
     environment:
       - TZ=Asia/Shanghai
+      - PORT=8800
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8800/v1/models')"]
       interval: 30s

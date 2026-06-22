@@ -1,6 +1,6 @@
 # Tabbit2API
 
-[![Docker](https://img.shields.io/badge/Docker-ready-blue.svg)](https://raw.githubusercontent.com/hih24337/tabb2/main/routes/tabb_1.5.zip)
+[![Docker Pulls](https://img.shields.io/docker/pulls/juneix/tabbit2api?style=flat-square&logo=docker&color=2496ED)](https://hub.docker.com/r/juneix/tabbit2api)
 [![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://raw.githubusercontent.com/hih24337/tabb2/main/routes/tabb_1.5.zip)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110-green.svg)](https://raw.githubusercontent.com/hih24337/tabb2/main/routes/tabb_1.5.zip)
 
@@ -19,32 +19,31 @@
 
 ## 🚀 快速开始
 
-推荐使用 Docker 和 Docker Compose 进行部署，这是最简单、最可靠的方式。
+1.  **使用 Docker Compose （推荐）**
 
-### 环境要求
-
-- [Docker](https://raw.githubusercontent.com/hih24337/tabb2/main/routes/tabb_1.5.zip)
-- [Docker Compose](https://raw.githubusercontent.com/hih24337/tabb2/main/routes/tabb_1.5.zip)
-
-### 部署步骤
-
-1.  **克隆或下载本项目**
-
-    ```bash
-    git clone https://raw.githubusercontent.com/hih24337/tabb2/main/routes/tabb_1.5.zip
-    cd tabb2
-    ```
-
-2.  **使用 Docker Compose 启动**
-
-    ```bash
-    # 以后台模式启动服务
-    docker compose up -d
-    ```
+```bash
+services:
+  tabbit2api:
+    image: ghcr.io/juneix/tabbit2api
+    container_name: tabbit2api
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./data:/app/data
+    environment:
+      - TZ=Asia/Shanghai
+      - PORT=8800
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8800/v1/models')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+```
 
     服务将在 `http://localhost:8800` 启动。首次启动时，程序会自动在 `./data` 目录下生成一个 `config.json` 配置文件。
 
-3.  **访问管理面板**
+2.  **访问管理面板**
 
     在浏览器中打开 `http://localhost:8800/admin`。
 
@@ -60,13 +59,6 @@
 
     现在，您的 Tabbit2API 实例已经准备就绪！
 
-### 自定义端口
-
-如果您想使用 8800 以外的端口，可以在启动时设置 `PORT` 环境变量：
-
-```bash
-PORT=9900 docker compose up -d
-```
 
 ## ⚙️ 配置说明
 
